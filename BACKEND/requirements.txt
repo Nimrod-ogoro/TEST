@@ -5,3 +5,4 @@ openai
 pymongo
 ollama
 dotenv
+uvicorn
