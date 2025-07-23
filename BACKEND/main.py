@@ -6,9 +6,8 @@ from pymongo import MongoClient
 import uvicorn
 import certifi
 import logging
-
 import os
-import ollama
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -38,34 +37,54 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Set to frontend domain in prod
+    allow_origins=["*"],  # Update in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Request schema
+# Request model
 class Query(BaseModel):
     question: str
+
+# Grok (xAI) API setup
+GROK_API_KEY = os.getenv("GROK_API_KEY")
+
+def query_grok(question: str):
+    headers = {
+        "Authorization": f"Bearer {GROK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "messages": [
+            {"role": "system", "content": "Answer the question accurately and concisely."},
+            {"role": "user", "content": question}
+        ]
+    }
+
+    try:
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",  # Example endpoint
+            headers=headers,
+            json={
+                "model": "mixtral-8x7b-32768",
+                "messages": payload["messages"],
+                "temperature": 0.7
+            }
+        )
+        response.raise_for_status()
+        data = response.json()
+        return data["choices"][0]["message"]["content"]
+    except Exception as e:
+        logging.exception("Error communicating with Grok API")
+        raise
 
 # Routes
 @app.post("/query")
 async def ask_question(query: Query):
     try:
-        logging.info(f"Received question: {query.question}")
-        
-        response = ollama.chat(
-            model="mistral",
-            messages=[
-                {"role": "system", "content": "Answer the user's question in a short and precise manner."},
-                {"role": "user", "content": query.question}
-            ]
-        )
-
-        answer = response.get("message", {}).get("content")
-        if not answer:
-            logging.error("No content in Ollama response")
-            raise HTTPException(status_code=500, detail="No content from model")
+        logging.info(f"Question: {query.question}")
+        answer = query_grok(query.question)
 
         collection.insert_one({
             "question": query.question,
@@ -73,29 +92,27 @@ async def ask_question(query: Query):
         })
 
         return {"answer": answer}
-    except Exception as e:
-        logging.exception("Error in /query endpoint")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to process query")
 
 @app.get("/conversations")
 async def get_conversations():
     try:
         conversations = list(collection.find({}, {"_id": 0}).sort("_id", -1))
         return conversations
-    except Exception as e:
-        logging.exception("Error in /conversations GET")
-        raise HTTPException(status_code=500, detail="Could not fetch conversations")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to fetch conversations")
 
 @app.delete("/conversations")
-def delete_all_conversations():
+async def delete_conversations():
     try:
         result = collection.delete_many({})
         return {"deleted_count": result.deleted_count}
-    except Exception as e:
-        logging.exception("Error in /conversations DELETE")
-        raise HTTPException(status_code=500, detail="Could not delete conversations")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to delete conversations")
 
-# Uvicorn entry point
+# Run the server
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
+
 
