@@ -63,3 +63,5 @@ async def get_conversations():
 def delete_all_conversations():
     result = collection.delete_many({})
     return {"deleted_count": result.deleted_count}
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
