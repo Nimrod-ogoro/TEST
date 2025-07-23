@@ -5,9 +5,14 @@ import { Toaster, toast } from 'react-hot-toast';
 import axios from 'axios';
 import './globals.css';
 
+type Conversation = {
+  question: string;
+  answer: string;
+};
+
 export default function Home() {
   const [question, setQuestion] = useState('');
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState(0);
 
@@ -33,12 +38,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    
     let interval: NodeJS.Timeout;
 
-    interval = setInterval(() => {
-      console.log('Running...');
-    }, 1000);
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingStage((prev) => (prev + 1) % loadingMessages.length);
+      }, 1000);
+    }
 
     return () => clearInterval(interval);
   }, [loading]);
@@ -50,6 +56,8 @@ export default function Home() {
     }
 
     setLoading(true);
+    setLoadingStage(0);
+
     try {
       await axios.post('https://test-production-d202.up.railway.app/query', { question });
       await fetchConversations();
@@ -76,9 +84,7 @@ export default function Home() {
     <main className="main-wrapper">
       <Toaster />
       <div className="chat-container">
-        <header className="chat-header">
-          Ask Me Anything 🤖
-        </header>
+        <header className="chat-header">Ask Me Anything 🤖</header>
 
         <div className="chat-history">
           {loading && (
