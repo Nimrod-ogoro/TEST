@@ -1,0 +1,134 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f7fafd;
+  color: #2c3e50;
+  height: 100%;
+}
+
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #e6f0ff, #ffffff);
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 700px;
+  height: 90vh;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 1.5rem 2rem;
+  background-color: #0066cc;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.chat-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.chat-message {
+  padding: 1rem;
+  border-radius: 10px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.chat-message.user {
+  background-color: #e8f0fe;
+  align-self: flex-start;
+}
+
+.chat-message.ai {
+  background-color: #f0f9ff;
+  align-self: flex-end;
+}
+
+.chat-message.italic {
+  font-style: italic;
+  color: #888;
+}
+
+.chat-input {
+  border-top: 1px solid #e0e0e0;
+  padding: 1rem 2rem;
+  background-color: #f9fbfc;
+}
+
+.chat-textarea {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  resize: none;
+  outline: none;
+  margin-bottom: 1rem;
+}
+
+.chat-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.submit-btn, .clear-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-btn {
+  background-color: #0066cc;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #004a99;
+}
+
+.clear-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
