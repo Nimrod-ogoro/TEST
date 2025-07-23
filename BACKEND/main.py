@@ -12,11 +12,11 @@ import ollama
 load_dotenv()
 
 # MongoDB Setup
-mongo_uri = os.getenv("MONGODB_URI", tlsCAFile=certifi.where())
+mongo_uri = os.getenv("MONGODB_URI")
 mongo_db_name = os.getenv("MONGODB_DB")
 mongo_collection_name = os.getenv("MONGO_COLLECTION")
 
-client = MongoClient(mongo_uri)
+client = MongoClient(mongo_uri, tlsCAFile=certifi.where())  
 db = client[mongo_db_name]
 collection = db[mongo_collection_name]
 
