@@ -33,13 +33,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let interval;
-    if (loading) {
-      setLoadingStage(0);
-      interval = setInterval(() => {
-        setLoadingStage((prev) => (prev + 1) % loadingMessages.length);
-      }, 1900);
-    }
+    
+    let interval: NodeJS.Timeout;
+
+    interval = setInterval(() => {
+      console.log('Running...');
+    }, 1000);
+
     return () => clearInterval(interval);
   }, [loading]);
 
