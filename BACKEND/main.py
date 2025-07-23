@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import uvicorn
+import certifi
 
 import os
 import ollama
@@ -11,7 +12,7 @@ import ollama
 load_dotenv()
 
 # MongoDB Setup
-mongo_uri = os.getenv("MONGODB_URI")
+mongo_uri = os.getenv("MONGODB_URI", tlsCAFile=certifi.where())
 mongo_db_name = os.getenv("MONGODB_DB")
 mongo_collection_name = os.getenv("MONGO_COLLECTION")
 

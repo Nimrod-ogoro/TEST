@@ -6,3 +6,4 @@ pymongo
 ollama
 dotenv
 uvicorn
+certifi
