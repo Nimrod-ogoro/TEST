@@ -2,3 +2,4 @@
 uvicorn[standard]
 python-dotenv
 openai
+pymongo
