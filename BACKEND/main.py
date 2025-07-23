@@ -62,7 +62,7 @@ def query_grok(question: str) -> str:
     }
 
     payload = {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama3-70b-8192",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": question}
